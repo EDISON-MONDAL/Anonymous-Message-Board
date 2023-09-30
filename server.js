@@ -3,12 +3,24 @@ require('dotenv').config();
 const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
-
+const mongoose = require('mongoose')
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
 
 const app = express();
+
+
+//connect to mongoose
+mongoose.connect( process.env.DB)
+.then(()=>{
+  console.log('MongoDb successfully connected!')
+})
+.catch((err)=>{
+  console.warn(err)
+})
+//connect to mongoose
+
 
 app.use('/public', express.static(process.cwd() + '/public'));
 

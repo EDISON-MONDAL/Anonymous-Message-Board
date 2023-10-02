@@ -72,33 +72,35 @@ module.exports = function (app) {
           console.log("No board with this name");
           res.json({ error: "No board with this name" });
         } else {
-          
-          console.log("data", data.threads);
+                  
+          data.threads.sort((a, b) => {
+            const dateA = new Date(a.bumped_on);
+            const dateB = new Date(b.bumped_on);
+            return dateB - dateA;
+          });
 
-          /*
+          console.log("data", data.threads);
+          
           const threads = data.threads.map((thread) => {
-            const {
-              _id,
-              text,
-              created_on,
-              bumped_on,
-              reported,
-              delete_password,
-              replies,
-            } = thread;
+            
+            const allReply = thread.replies.map((perReply)=>{
+              const {_id, text, created_on, bumped_on } = perReply
+              return {_id, text, created_on, bumped_on }
+            })
+
             return {
-              _id,
-              text,
-              created_on,
-              bumped_on,
-              reported,
-              delete_password,
-              replies,
+              _id: thread._id,
+              text: thread.text,
+              created_on: thread.created_on,
+              bumped_on: thread.bumped_on,
+              replies: allReply,
               replycount: thread.replies.length,
             };
           });
+
+          console.log("threads", threads[0].replies);
           res.json(threads);
-          */
+          
         }
       })
     })

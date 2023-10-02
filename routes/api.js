@@ -16,7 +16,7 @@ module.exports = function (app) {
       if (!board) {
         board = req.params.board;
       }
-      console.log("post", req.body);
+      //console.log("post", req.body);
       const date = new Date();
       const newThread = new ThreadModel({
         text: text,
@@ -166,34 +166,50 @@ module.exports = function (app) {
       })
     });
      
-/*
+
 
   app
     .route("/api/replies/:board")
     
     .post((req, res) => {
-      console.log("thread", req.body);
+      //console.log("thread", req.body);
       const { thread_id, text, delete_password } = req.body;
       const board = req.params.board;
+      //console.log('board '+ board)
+      
+      const date = new Date();
       const newReply = new ReplyModel({
         text: text,
         delete_password: delete_password,
+        created_on: date,
+        bumped_on: date
       });
+
+
       BoardModel.findOne({ name: board })
       .then((boardData)=>{
         if (!boardData) {
           res.json("error", "Board not found");
         } else {          
-          let threadToAddReply = boardData.threads.id(thread_id);
-          threadToAddReply.bumped_on = new Date();
-          threadToAddReply.replies.push(newReply);
-          boardData.save()
+          let threadToAddReply = boardData
+          for(let y=0; y < threadToAddReply.threads.length; y++){
+            if( threadToAddReply.threads[y].id == thread_id){
+              threadToAddReply.threads[y].bumped_on = date
+              threadToAddReply.threads[y].replies.push(newReply)
+            }
+          }
+          
+          threadToAddReply.save()
           .then((updatedData)=>{
-            res.json(updatedData);
+            //res.json(updatedData);
+            return res.redirect('/b/' + board + '/' + thread_id )
           })
+          
         }
       })
+      
     })
+    
     .get((req, res) => {
       const board = req.params.board;
       BoardModel.findOne({ name: board })
@@ -208,6 +224,7 @@ module.exports = function (app) {
         }
       })
     })
+    /*
     .put((req, res) => {
       //       thread_id: 60898569e083081d56e290cf
       //       reply_id: 608986aee083081d56e290d0

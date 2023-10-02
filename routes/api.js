@@ -72,9 +72,10 @@ module.exports = function (app) {
           console.log("No board with this name");
           res.json({ error: "No board with this name" });
         } else {
-          // console.log("data", data);
+          
+          console.log("data", data.threads);
 
-
+          /*
           const threads = data.threads.map((thread) => {
             const {
               _id,
@@ -97,6 +98,7 @@ module.exports = function (app) {
             };
           });
           res.json(threads);
+          */
         }
       })
     })
@@ -224,12 +226,11 @@ module.exports = function (app) {
         }
       })
     })
-    /*
+    
     .put((req, res) => {
-      //       thread_id: 60898569e083081d56e290cf
-      //       reply_id: 608986aee083081d56e290d0
       const { thread_id, reply_id } = req.body;
       const board = req.params.board;
+
       BoardModel.findOne({ name: board })
       .then((data)=>{
         if (!data) {
@@ -237,21 +238,35 @@ module.exports = function (app) {
           res.json({ error: "No board with this name" });
         } else {
           console.log("data", data);
-          let thread = data.threads.id(thread_id);
-          let reply = thread.replies.id(reply_id);
-          reply.reported = true;
-          reply.bumped_on = new Date();
+
+          for(let y=0; y < data.threads.length; y++){
+            if( data.threads[y].id == thread_id ){
+
+              for(let k=0; k < data.threads[y].replies.length; k++){
+                if( data.threads[y].replies[k].id == reply_id ){
+                  data.threads[y].replies[k].reported = true
+                  data.threads[y].replies[k].bumped_on = new Date()
+
+                  break
+                }
+              }
+            }
+          }
+          
           data.save()
           .then((data)=>{
-            res.send("Success");
+            res.send("reported");
           })
+          
         }
       })
-    })    
+    })  
+      
     .delete((req, res) => {
       const { thread_id, reply_id, delete_password } = req.body;
       console.log("delete reply body", req.body);
       const board = req.params.board;
+
       BoardModel.findOne({ name: board })
       .then((data)=>{
         if (!data) {
@@ -259,22 +274,32 @@ module.exports = function (app) {
           res.json({ error: "No board with this name" });
         } else {
           console.log("data", data);
-          let thread = data.threads.id(thread_id);
-          let reply = thread.replies.id(reply_id);
-          if (reply.delete_password === delete_password) {
-            reply.remove();
-          } else {
-            res.send("Incorrect Password");
-            return;
-          }
+
+          for(let y=0; y < data.threads.length; y++){
+            if( data.threads[y].id == thread_id ){
+
+              for(let k=0; k < data.threads[y].replies.length; k++){
+                if( data.threads[y].replies[k].id == reply_id ){
+                  
+                  if ( data.threads[y].replies[k].delete_password == delete_password) {
+                    data.threads[y].replies[k].text = '[deleted]'
+                    break
+                  } else {
+                    res.send("incorrect password");
+                    return;
+                  }
+                }
+              }
+            }
+          }          
 
           data.save()
           .then((data)=>{
-            res.send("Success");
+            res.send("success");
           })
+          
         }
       })
-    });
- */    
+    });   
     
 };

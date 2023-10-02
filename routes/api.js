@@ -40,7 +40,7 @@ module.exports = function (app) {
           .then((data)=>{
             if(data){
               // console.log("newBoardData", newThread);
-              return res.redirect('/b/' + board )
+              return res.redirect('/b/' + board + '/' )
             }
           })
           .catch((err)=>{
@@ -53,7 +53,7 @@ module.exports = function (app) {
           .then((data)=>{
             if(data){
               // console.log("newBoardData", newThread);
-              return res.redirect('/b/' + board )
+              return res.redirect('/b/' + board + '/' )
             }         
           })
           .catch((err)=>{

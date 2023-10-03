@@ -319,7 +319,7 @@ module.exports = function (app) {
       
     .delete((req, res) => {
       const { thread_id, reply_id, delete_password } = req.body;
-      console.log("delete reply body", req.body);
+      //console.log("delete reply body", req.body);
       const board = req.params.board;
 
       BoardModel.findOne({ name: board })

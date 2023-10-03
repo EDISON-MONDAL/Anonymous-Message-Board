@@ -161,7 +161,13 @@ module.exports = function (app) {
         if (!boardData) {
           res.json("error", "Board not found");
         } else {
-          let threadToDelete = boardData.threads.find(thread => thread.id === thread_id);
+          
+          let threadToDelete = boardData.threads.find((thread) => {  
+            if(thread.id === thread_id){
+              return thread
+            } 
+          });
+          //console.log('threadToDelete '+ threadToDelete)
           
           if (threadToDelete.delete_password === delete_password) {
 
@@ -182,7 +188,7 @@ module.exports = function (app) {
             res.send("incorrect password");
             return;
           }
-                         
+                      
         }
       })
     });
@@ -247,20 +253,11 @@ module.exports = function (app) {
 
           for(let x=0; x < data.threads.length; x++){
             if( data.threads[x].id ==  thread_id){
-              const {_id, text, created_on, bumped_on, replies} = data.threads[x]
-              const returnObject = {
-                _id,
-                text,
-                created_on,
-                bumped_on,
-                replies: data.threads[x].replies,
-                replycount: data.threads[x].replies.length,
-              }
-              singleThreadArray.push( returnObject )
+              singleThreadArray.push( data.threads[x] )
               break
             }
           }
-          /*
+          
           const theThread = singleThreadArray.map((thread) => {
 
             const replies = thread.replies.map((perReply)=>{
@@ -273,16 +270,14 @@ module.exports = function (app) {
               text: thread.text,
               created_on: thread.created_on,
               bumped_on: thread.bumped_on,
-              replies: thread.replies,
+              replies: replies,
               replycount: thread.replies.length,
             };
           })
-          */
-          console.log('singleThreadArray '+ singleThreadArray[0] )
+          
+          //console.log('theThread '+ theThread[0] )
 
-          const thread = data.threads.id(req.query.thread_id);
-          console.log('thread '+ thread)
-          res.json(singleThreadArray[0]);
+          res.json(theThread[0]);
         }
       })
     })

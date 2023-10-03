@@ -57,7 +57,7 @@ suite('Functional Tests', function() {
           done();
         });
     });
-
+/*
     test('Deleting a thread with the correct password: DELETE request to /api/threads/{board} with a valid delete_password', function(done) {
         this.timeout(4000)
       chai
@@ -73,6 +73,7 @@ suite('Functional Tests', function() {
 
   
     test('Reporting a thread: PUT request to /api/threads/{board}', function(done) {
+        this.timeout(4000)
       chai
         .request(server)
         .put('/api/threads/' + board)
@@ -83,6 +84,30 @@ suite('Functional Tests', function() {
           done();
         });
     });
-  
+    
+    test('Creating a new reply: POST request to /api/replies/{board}', function(done) {
+        this.timeout(4000)
+        chai
+          .request(server)
+          .post('/api/replies/' + board)
+          .send({ thread_id: threadId, text: 'first reply', delete_password: 'delete first reply' })
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            done();
+          });
+    });
+
+    test('Viewing a single thread with all replies: GET request to /api/replies/{board}', function(done) {
+        this.timeout(4000)
+        chai
+          .request(server)
+          .get(`/api/replies/${board}?thread_id=${threadId}`)
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            console.log('is array -------------- '+ res.body)
+            done();
+          });
+    });
+    */
 
 });

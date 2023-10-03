@@ -235,17 +235,54 @@ module.exports = function (app) {
       const board = req.params.board;
       const { thread_id } = req.query
 
-      console.log('thread_id -=-=-=-=-=-=-=--=-=-=-= ' + thread_id)
-
       BoardModel.findOne({ name: board })
       .then((data)=>{
         if (!data) {
           console.log("No board with this name");
           res.json({ error: "No board with this name" });
         } else {
-          console.log("data", data);
+          //console.log("data", data);
+
+          const singleThreadArray = []
+
+          for(let x=0; x < data.threads.length; x++){
+            if( data.threads[x].id ==  thread_id){
+              const {_id, text, created_on, bumped_on, replies} = data.threads[x]
+              const returnObject = {
+                _id,
+                text,
+                created_on,
+                bumped_on,
+                replies: data.threads[x].replies,
+                replycount: data.threads[x].replies.length,
+              }
+              singleThreadArray.push( returnObject )
+              break
+            }
+          }
+          /*
+          const theThread = singleThreadArray.map((thread) => {
+
+            const replies = thread.replies.map((perReply)=>{
+              const {_id, text, created_on, bumped_on } = perReply
+              return {_id, text, created_on, bumped_on }
+            })
+
+            return {
+              _id: thread._id,
+              text: thread.text,
+              created_on: thread.created_on,
+              bumped_on: thread.bumped_on,
+              replies: thread.replies,
+              replycount: thread.replies.length,
+            };
+          })
+          */
+          console.log('singleThreadArray '+ singleThreadArray[0] )
+
           const thread = data.threads.id(req.query.thread_id);
-          res.json(thread);
+          console.log('thread '+ thread)
+          res.json(singleThreadArray[0]);
         }
       })
     })
@@ -260,7 +297,7 @@ module.exports = function (app) {
           console.log("No board with this name");
           res.json({ error: "No board with this name" });
         } else {
-          console.log("data", data);
+          // console.log("data", data);
 
           for(let y=0; y < data.threads.length; y++){
             if( data.threads[y].id == thread_id ){
@@ -296,7 +333,7 @@ module.exports = function (app) {
           console.log("No board with this name");
           res.json({ error: "No board with this name" });
         } else {
-          console.log("data", data);
+          // console.log("data", data);
 
           for(let y=0; y < data.threads.length; y++){
             if( data.threads[y].id == thread_id ){

@@ -79,7 +79,7 @@ module.exports = function (app) {
             return dateB - dateA;
           });
 
-          console.log("data", data.threads);
+          // console.log("data", data.threads);
           
           const threads = data.threads.map((thread) => {
             
@@ -88,17 +88,34 @@ module.exports = function (app) {
               return {_id, text, created_on, bumped_on }
             })
 
+            allReply.sort((a, b) => {
+              const dateA = new Date(a.bumped_on);
+              const dateB = new Date(b.bumped_on);
+              return dateB - dateA;
+            });
+            //console.log('allReply ' + allReply)
+
+            const threeReplies = []
+
+            for(let n=3; n >= 1; n--){
+              const arrValue = allReply[allReply.length - n]
+              if( arrValue != undefined ){
+                threeReplies.push( arrValue )
+              }             
+            }
+
+            //console.log("threeReplies", threeReplies[0]);
+
             return {
               _id: thread._id,
               text: thread.text,
               created_on: thread.created_on,
               bumped_on: thread.bumped_on,
-              replies: allReply,
+              replies: threeReplies,
               replycount: thread.replies.length,
             };
           });
 
-          console.log("threads", threads[0].replies);
           res.json(threads);
           
         }

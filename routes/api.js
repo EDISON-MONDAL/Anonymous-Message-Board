@@ -233,6 +233,10 @@ module.exports = function (app) {
     
     .get((req, res) => {
       const board = req.params.board;
+      const { thread_id } = req.query
+
+      console.log('thread_id -=-=-=-=-=-=-=--=-=-=-= ' + thread_id)
+
       BoardModel.findOne({ name: board })
       .then((data)=>{
         if (!data) {
